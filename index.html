@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Predict &amp; Protect</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c3aed">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Predict &amp; Protect">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#fff7f0;--card:#fff;--ink:#2b2233;--mute:#7a6f85;--pri:#7c3aed;--ok:#16a34a;--bad:#e11d48;--line:#eadff5;--gold:#f59e0b;--code:#1e1b2e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17121f;--card:#221a2e;--ink:#f3ecfa;--mute:#a99bb8;--line:#372a49}}
+:root[data-theme="dark"]{--bg:#17121f;--card:#221a2e;--ink:#f3ecfa;--mute:#a99bb8;--line:#372a49}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55}
+.wrap{max-width:700px;margin:0 auto;padding:16px 14px 60px}
+h1{font-size:25px;margin:4px 0}h2{margin:0 0 8px;font-size:21px}h3{margin:14px 0 4px;font-size:15px}
+.sub{color:var(--mute);margin:0 0 12px}
+.hero{background:linear-gradient(135deg,var(--pri),#ec4899);color:#fff;border-radius:18px;padding:16px;margin-bottom:14px}
+.hero b{font-size:20px}.hero small{opacity:.92}.stats{display:flex;gap:14px;margin-top:6px;font-size:14px}
+.xpb{height:10px;background:rgba(255,255,255,.3);border-radius:99px;margin-top:10px;overflow:hidden}.xpb i{display:block;height:100%;background:#fde68a;transition:width .5s}
+.ch{display:flex;gap:12px;align-items:center;width:100%;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:9px;text-align:left;cursor:pointer;color:var(--ink);font:inherit}
+.ch:hover:not(:disabled){border-color:var(--pri)}.ch:disabled{opacity:.5;cursor:not-allowed}.ch .e{font-size:28px}.ch small{color:var(--mute);display:block}
+.prog{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 12px}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--pri),var(--gold));transition:width .4s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--pri);margin-bottom:6px}
+.tip{background:var(--bg);border-left:4px solid var(--gold);padding:10px 12px;border-radius:10px;margin:12px 0}
+.good{border-left-color:var(--ok)}.bad{border-left-color:var(--bad)}
+.btn{margin-top:10px;padding:10px 16px;border:none;border-radius:12px;background:var(--pri);color:#fff;font:inherit;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:not-allowed}.ghost{background:none;color:var(--mute);border:1px solid var(--line)}.btn.on{outline:3px solid var(--gold)}.sm{padding:6px 11px;font-size:13px;margin:4px 4px 0 0}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+pre,.cb{background:var(--code);color:#e9e4ff;padding:11px 12px;border-radius:12px;overflow-x:auto;font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace;margin:8px 0;white-space:pre}
+.cb b{color:#fbbf24}.cb i{color:#86efac;font-style:normal}.cb u{color:#93c5fd;text-decoration:none}
+textarea{width:100%;min-height:120px;background:var(--code);color:#e9e4ff;border:2px solid var(--line);border-radius:12px;padding:11px;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;resize:vertical;tab-size:2}
+textarea:focus{outline:none;border-color:var(--pri)}
+.out{background:#0f172a;color:#bbf7d0;padding:10px 12px;border-radius:12px;margin-top:8px;font:12.5px/1.45 ui-monospace,Menlo,Consolas,monospace;white-space:pre;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px;text-align:center}td,th{border:1px solid var(--line);padding:5px}
+th.cl{cursor:pointer;background:var(--bg)}th.cl:hover{background:var(--line)}
+.grid{display:grid;gap:3px;margin:10px 0}.grid i{border-radius:4px;text-align:center;font:600 11px/22px system-ui;font-style:normal;height:22px}
+.meter{height:14px;background:var(--line);border-radius:99px;overflow:hidden;margin:3px 0 8px}.meter i{display:block;height:100%;transition:width .4s}
+input[type=range]{width:100%}label{display:block;font-size:14px;color:var(--mute);margin-top:8px}
+.res{background:var(--bg);border-radius:12px;padding:10px 12px;margin-top:10px}
+.foot{font-size:12px;color:var(--mute);margin-top:14px}.center{text-align:center}.big{font-size:56px}
+.xp{color:var(--ok);font-weight:700}
+@keyframes pop{0%{transform:scale(.97);opacity:0}100%{transform:scale(1);opacity:1}}.pop{animation:pop .25s}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+function rngf(sd){return function(){sd=(sd*1664525+1013904223)%4294967296;return sd/4294967296}}
+function gen(n,seed){var r=rngf(seed),nm=function(){return Math.sqrt(-2*Math.log(r()+1e-9))*Math.cos(2*Math.PI*r())},D=[];
+for(var i=0;i<n;i++){var rural=r()<.45?1:0,age=Math.max(18,Math.min(80,Math.round(36+14*nm()))),hiv=r()<(rural?.16:.1)?1:0,contact=r()<.2?1:0;
+var z=-2.7+.02*(age-36)+1.0*hiv+1.0*contact,tb=r()<1/(1+Math.exp(-z))?1:0;
+var cw=tb?(r()<.12?0:Math.max(0,Math.round(2.9+1.8*nm()))):(r()<.22?Math.round(r()*3.5):0);if(rural&&tb)cw=Math.round(cw*.3);
+var wl=r()<(tb?(rural?.42:.62):.12)?1:0,ns=r()<(tb?(rural?.36:.54):.14)?1:0,fv=r()<(tb?.45:.16)?1:0,bmi=+(22-(tb?2.0:0)+3.2*nm()).toFixed(1);
+D.push({age:age,cough:cw,wl:wl,ns:ns,fever:fv,hiv:hiv,contact:contact,bmi:bmi,rural:rural,tb:tb})}
+D.forEach(function(d){d.cough_na=0;if(r()<(d.tb?.3:.09)){d.cough=null;d.cough_na=1}if(r()<.1)d.bmi=null});return D}
+function med(a){a=a.filter(function(x){return x!==null}).sort(function(x,y){return x-y});return a[Math.floor(a.length/2)]}
+function clean(D,m0){var m=m0=="flag"?"median":m0;if(m=="drop")return D.filter(function(d){return d.cough!==null&&d.bmi!==null}).map(function(d){return Object.assign({},d)});
+var mc=med(D.map(function(d){return d.cough})),mb=med(D.map(function(d){return d.bmi}));
+return D.map(function(d){var c=Object.assign({},d);if(c.cough===null)c.cough=m=="zero"?0:mc;if(c.bmi===null)c.bmi=m=="zero"?0:mb;return c})}
+function split(D,seed,f){var r=rngf(seed),a=D.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}var k=Math.round(a.length*f);return{tr:a.slice(0,k),te:a.slice(k)}}
+function sig(z){return 1/(1+Math.exp(-z))}
+function train(tr,F,o){o=o||{};var n=tr.length,p=F.length,mu=[],sd=[],w=[],b=0,i,j;
+for(j=0;j<p;j++){var s=0;tr.forEach(function(d){s+=d[F[j]]});var m=s/n,v=0;tr.forEach(function(d){v+=Math.pow(d[F[j]]-m,2)});mu.push(m);sd.push(Math.sqrt(v/n)||1);w.push(0)}
+var np=tr.filter(function(d){return d.tb}).length,wp=o.bal?n/(2*np):1,wn=o.bal?n/(2*(n-np)):1,l2=o.l2||0,X=tr.map(function(d){return F.map(function(f,j){return(d[f]-mu[j])/sd[j]})}),loss=[];
+for(var it=0;it<260;it++){var gw=w.map(function(){return 0}),gb=0,L=0;
+for(i=0;i<n;i++){var z=b;for(j=0;j<p;j++)z+=w[j]*X[i][j];var pr=sig(z),y=tr[i].tb,c=y?wp:wn,e=(pr-y)*c;for(j=0;j<p;j++)gw[j]+=e*X[i][j];gb+=e;L+=-c*(y?Math.log(pr+1e-9):Math.log(1-pr+1e-9))}
+for(j=0;j<p;j++)w[j]-=.5*(gw[j]/n+l2*w[j]);b-=.5*gb/n;if(it%10==0)loss.push(L/n)}
+return{F:F,mu:mu,sd:sd,w:w,b:b,loss:loss}}
+function pred(M,d){var z=M.b;for(var j=0;j<M.F.length;j++)z+=M.w[j]*(d[M.F[j]]-M.mu[j])/M.sd[j];return sig(z)}
+function auc(ps,ys){var a=ps.map(function(p,i){return[p,ys[i]]}).sort(function(x,y){return x[0]-y[0]}),r=0,np=0,nn=0;a.forEach(function(x,i){if(x[1]){r+=i+1;np++}else nn++});return(r-np*(np+1)/2)/(np*nn)}
+function conf(ps,ys,t){var tp=0,fp=0,fn=0,tn=0;ps.forEach(function(p,i){var f=p>=t;if(ys[i]&&f)tp++;else if(!ys[i]&&f)fp++;else if(ys[i])fn++;else tn++});return{tp:tp,fp:fp,fn:fn,tn:tn,se:tp+fn?tp/(tp+fn):0,sp:tn+fp?tn/(tn+fp):0,pr:tp+fp?tp/(tp+fp):0}}
+function evalM(M,te){var ps=te.map(function(d){return pred(M,d)}),ys=te.map(function(d){return d.tb});return{ps:ps,ys:ys,auc:auc(ps,ys)}}
+function cv(D,F,o,k){var r=rngf(5),a=D.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}var out=[],sz=Math.floor(a.length/k);
+for(var f=0;f<k;f++){var te=a.slice(f*sz,(f+1)*sz),tr=a.slice(0,f*sz).concat(a.slice((f+1)*sz));out.push(evalM(train(tr,F,o),te).auc)}return out}
+
+var RAW=gen(1600,11),C=clean(RAW,"flag"),SP=split(C,3,.75),F9=["age","cough","wl","ns","fever","hiv","contact","bmi","cough_na"];
+var M0=train(SP.tr,F9,{}),E0=evalM(M0,SP.te),Mb=train(SP.tr,F9,{bal:true}),Eb=evalM(Mb,SP.te),CVU=cv(C,F9,{},5),CVB=cv(C,F9,{bal:true},5);
+var TB=RAW.filter(function(d){return d.tb}),nTB=TB.length,prev=nTB/RAW.length,naTB=TB.filter(function(d){return d.cough_na}).length/nTB,naNT=RAW.filter(function(d){return!d.tb&&d.cough_na}).length/(RAW.length-nTB);
+var nNaC=RAW.filter(function(d){return d.cough===null}).length,nNaB=RAW.filter(function(d){return d.bmi===null}).length,nRural=RAW.filter(function(d){return d.rural}).length;
+var $=function(i){return document.getElementById(i)},n4=function(x){return x.toFixed(4)},pc=function(x){return(x*100).toFixed(0)+"%"},pad=function(s,n){s=String(s);while(s.length<n)s=" "+s;return s},
+mean=function(a){return a.reduce(function(x,y){return x+y},0)/a.length},sdv=function(a){var m=mean(a);return Math.sqrt(mean(a.map(function(v){return(v-m)*(v-m)})))};
+var CN=["age","cough","wl","ns","fever","hiv","contact","bmi","rural","tb"];
+function head(k){var h=pad("",3);CN.forEach(function(c){h+=pad(c,8)});var o=h;RAW.slice(0,k).forEach(function(d,i){o+="\n"+pad(i,3);CN.forEach(function(c){o+=pad(d[c]===null?"NaN":(c=="cough"||c=="bmi"?(d[c]).toFixed(1):d[c]),8)})});return o}
+var ages=RAW.map(function(d){return d.age});
+function ff(a){return"array(["+a.slice(0,5).map(function(v){return v.toFixed(4)}).join(", ")+", ...])"}
+var c02=conf(E0.ps,E0.ys,.2),c05=conf(E0.ps,E0.ys,.5),cb05=conf(Eb.ps,Eb.ys,.5);
+var PIPE="Pipeline(steps=[('standardscaler', StandardScaler()),\n                ('logisticregression', LogisticRegression())])";
+var XP_PER=20,TITLES=["Rookie Analyst 🌱","Data Wrangler 🧹","Pipeline Builder 🔧","Model Maker 🛠️","Metric Whisperer 🎚️","Health Data Scientist 🧪","Predictive Queen 👑"];
+var S={xp:0,ex:{},best:0};try{var q=JSON.parse(localStorage.getItem("hdc")||"null");if(q)S=q}catch(e){}
+function save(){try{localStorage.setItem("hdc",JSON.stringify(S))}catch(e){}}
+var CTX1="import pandas as pd\ndf = pd.read_csv('tb_screening.csv')";
+var CTX3="from sklearn.model_selection import train_test_split\nX = df[['age','cough','wl','ns','fever','hiv','contact','bmi','cough_na']]\ny = df['tb']\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=42)";
+var CTX4=CTX3+"\n\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nmodel = make_pipeline(StandardScaler(), LogisticRegression())\nmodel.fit(X_train, y_train)\nprobs = model.predict_proba(X_test)[:, 1]";
+var CTX5=CTX4.replace("\nprobs","\nprobs")+"\nflagged = probs >= 0.2";
+var CH=[
+{e:"📊",n:"Meet your DataFrame",cs:`df.shape               # (rows, columns)
+df.head()              # first 5 rows
+df['tb']               # one column
+df['tb'].mean()        # average (prevalence for 0/1)
+df['tb'].value_counts()
+df[df['rural'] == 1]   # filter rows`,
+steps:[
+{t:"s",h:"Your data is a table you can talk to",v:"explore",b:`<p>In Python, we use a library called <b>pandas</b>. A table in pandas is a <b>DataFrame</b>, and by convention we name it <code>df</code>.</p><p>Each <b>row</b> is one patient. Each <b>column</b> is one fact about them. You "talk" to the table by writing short commands. <b>Click the commands below</b> to run them on our TB screening data (1,600 patients).</p>`},
+{t:"s",h:"Features vs target",v:"anatomy",b:`<p>Every prediction problem splits the columns into two groups:</p><p>🧩 <b>Features</b> (also called <b>X</b>): what we know <i>before</i> the answer. Age, cough, night sweats…<br>🎯 <b>Target</b> (also called <b>y</b>): the thing we want to predict.</p><p><b>Click a column header</b> below. Can you find the target?</p>`},
+{t:"s",h:"Averages of 0/1 columns are percentages",b:`<p>The <code>tb</code> column is 0 (no TB) or 1 (TB). A cool trick: <b>the mean of a 0/1 column is the share of 1s</b>, so <code>df['tb'].mean()</code> directly gives <b>prevalence</b>.</p><p>To look at a subgroup, <b>filter</b> with a condition inside square brackets. Read it like English:</p><div class="cb">rural_df = df[<b>df['rural'] == 1</b>]
+#          ^ "give me the rows where rural equals 1"</div><div class="tip">⚠️ Note the <b>double equals</b> <code>==</code> for comparing. A single <code>=</code> means "store this in a variable".</div><p>Now you try. Your turn →</p>`},
+{t:"x",ti:"How big is the table?",p:"Print the <b>shape</b> of <code>df</code> (rows, columns).",start:"# print the shape of df\n",sol:"print(df.shape)",req:[/df\.shape/],out:function(){return"(1600, 10)"},h:["Shape is an attribute, not a function: no parentheses after it.","print(df.shape)"],why:"Shape gives (rows, columns): 1,600 patients and 10 columns. Always check this first after loading data."},
+{t:"x",ti:"What share of patients have TB?",p:"Compute the <b>mean of the <code>tb</code> column</b> (that's the prevalence).",start:"# prevalence of TB\n",sol:"print(df['tb'].mean())",req:[/df(\['tb'\]|\.tb)\.mean\(\)/],out:function(){return String(+prev.toFixed(4))},h:["Select the column with df['tb'] then call .mean()","print(df['tb'].mean())"],why:"About "+(prev*100).toFixed(1)+"% of patients have TB. That's a rare outcome, which will matter a lot when we evaluate models."},
+{t:"x",ti:"Count each outcome",p:"Use <code>value_counts()</code> on the <code>tb</code> column to count how many patients are 0 and how many are 1.",start:"# count TB vs no TB\n",sol:"print(df['tb'].value_counts())",req:[/df(\['tb'\]|\.tb)\.value_counts\(\)/],out:function(){return"tb\n0    "+(RAW.length-nTB)+"\n1     "+nTB+"\nName: count, dtype: int64"},h:["value_counts() is a method you call on a column.","print(df['tb'].value_counts())"],why:"value_counts is the fastest way to see class balance. Here the classes are very imbalanced."},
+{t:"x",ti:"Filter to rural patients",p:"Create <code>rural_df</code> containing only rows where <code>rural</code> equals 1, then print how many rows it has with <code>len()</code>.",start:"# rural patients only\n",sol:"rural_df = df[df['rural'] == 1]\nprint(len(rural_df))",req:[/rural_df=df\[df(\['rural'\]|\.rural)==1\]/,/len\(rural_df\)|rural_df\.shape/],out:function(){return String(nRural)},h:["Put the condition inside df[ ... ] and use ==","rural_df = df[df['rural'] == 1]  then  print(len(rural_df))"],why:"Filtering lets you study subgroups. Later we'll use this to check if our model treats rural patients fairly."}]},
+
+{e:"🧹",n:"Clean the mess",cs:`df.isna().sum()               # count missing per column
+df['x'].isna().astype(int)    # 1 if missing else 0
+df['x'].median()
+df['x'].fillna(value)         # fill gaps`,
+steps:[
+{t:"s",h:"Holes in the data",v:"miss",b:`<p>Real health data has gaps: a nurse skipped a question, a tablet crashed, a patient left early. In pandas, a missing value is <code>NaN</code> ("not a number").</p><p>Most models <b>crash on NaN</b>, so you must decide what to do. Try each strategy on this block of 40 patients' <b>cough weeks</b>:</p>`},
+{t:"s",h:"Why missing data can carry a signal",b:`<p>You might think "just delete rows with gaps". But look at our data:</p><div class="tip"><b>${(naTB*100).toFixed(0)}%</b> of TB patients have a missing cough value, vs only <b>${(naNT*100).toFixed(0)}%</b> of non-TB patients.</div><p>Sicker patients are recorded less carefully. Missingness is <b>informative</b>. If you delete those rows you throw away exactly the TB patients you need, and your TB prevalence drops. 😬</p><p>The best-practice move: <b>fill the gap AND add a flag column</b> saying "this was missing". The model can then use both.</p>`},
+{t:"s",h:"Order matters!",b:`<p>Create the flag <b>before</b> you fill. Once you fill the gaps, you can no longer tell which values were missing!</p><div class="cb"><i># 1. flag first</i>
+df['cough_na'] = df['cough'].<b>isna()</b>.<b>astype(int)</b>
+<i># 2. then fill with the median</i>
+df['cough'] = df['cough'].<b>fillna</b>(df['cough'].<b>median()</b>)</div><p><code>isna()</code> gives True/False, and <code>astype(int)</code> turns that into 1/0. We use the <b>median</b> (the middle value) because it isn't pulled around by extreme values like the mean is.</p>`},
+{t:"x",ti:"How many holes?",p:"Count the missing values in <b>every column</b> using <code>isna()</code> and <code>sum()</code>.",start:"# missing values per column\n",sol:"print(df.isna().sum())",req:[/df\.(isna|isnull)\(\)\.sum\(\)/],out:function(){var o="";CN.forEach(function(c){var n=c=="cough"?nNaC:c=="bmi"?nNaB:0;o+=(c+"          ").slice(0,10)+pad(n,5)+"\n"});return o+"dtype: int64"},h:["Chain two methods: first isna(), then sum()","print(df.isna().sum())"],why:"isna() makes a True/False table, and sum() counts the Trues in each column. Only cough and bmi have gaps."},
+{t:"x",ti:"Create the missing-cough flag",p:"Create a new column <code>cough_na</code> that is <b>1 if cough is missing, else 0</b>. Remember: flag <i>before</i> filling!",start:"# create the flag\n",sol:"df['cough_na'] = df['cough'].isna().astype(int)",req:[/df\['cough_na'\]=df\['cough'\]\.(isna|isnull)\(\)\.astype\(int\)/],out:function(){return"✓ Column created. "+nNaC+" patients have cough_na = 1"},h:["Start with df['cough'].isna() then convert True/False to 1/0 with .astype(int)","df['cough_na'] = df['cough'].isna().astype(int)"],why:"Now the information 'this value was missing' is saved forever as its own feature."},
+{t:"x",ti:"Fill the cough gaps",p:"Fill the missing values in <code>cough</code> with its <b>median</b>.",start:"# fill cough with the median\n",sol:"df['cough'] = df['cough'].fillna(df['cough'].median())",req:[/df\['cough'\]=df\['cough'\]\.fillna\(df\['cough'\]\.median\(\)\)/],out:function(){return"✓ cough filled. Missing now: 0\n(median cough = "+(function(){var a=RAW.filter(function(d){return d.cough!==null}).map(function(d){return d.cough}).sort(function(x,y){return x-y});return a[Math.floor(a.length/2)]}())+" weeks, since most people don't cough for weeks)"},h:["fillna() takes the value to fill with. That value is df['cough'].median()","df['cough'] = df['cough'].fillna(df['cough'].median())"],why:"Notice the median is 0 weeks, so filling is like saying 'no cough'. That's exactly why we made the flag first!"},
+{t:"x",ti:"Fill BMI too",p:"Do the same for <code>bmi</code>: fill its missing values with the median.",start:"# fill bmi with the median\n",sol:"df['bmi'] = df['bmi'].fillna(df['bmi'].median())",req:[/df\['bmi'\]=df\['bmi'\]\.fillna\(df\['bmi'\]\.median\(\)\)/],out:function(){return"✓ bmi filled. Missing now: 0\nYour DataFrame is clean and has 11 columns."},h:["Same pattern as the cough line, with 'bmi'","df['bmi'] = df['bmi'].fillna(df['bmi'].median())"],why:"Clean data in, so now we can start modelling. Pattern to remember: df['col'] = df['col'].fillna(...)."}]},
+
+{e:"✂️",n:"Split the data",cs:`X = df[['a','b','c']]   # features (double brackets!)
+y = df['target']        # target (single brackets)
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, random_state=42)`,
+steps:[
+{t:"s",h:"The sealed envelope",v:"split",b:`<p>If you test a model on the same patients it learned from, it just <b>memorises</b> them and looks amazing. That tells you nothing about <b>new</b> patients, the ones you actually care about.</p><p>So we <b>split</b> the data. 📚 <b>Train</b>: the model learns from these. 📝 <b>Test</b>: sealed in an envelope until the very end. Slide to see how a split looks with 100 patients:</p>`},
+{t:"s",h:"X and y",b:`<p>Models want two inputs:</p><p><b>X</b> (capital) = a table of features. <b>y</b> (lowercase) = one column of answers.</p><div class="cb">X = df[<b>[</b>'age', 'cough', 'hiv'<b>]</b>]   <i># double brackets → a table</i>
+y = df[<b>'tb'</b>]                      <i># single brackets → one column</i></div><div class="tip bad">🚨 <b>Data leakage:</b> never put the target (<code>tb</code>) inside X. The model would just read the answer. Likewise, don't include things that happen <i>after</i> diagnosis, like "started TB treatment".</div>`},
+{t:"s",h:"Reading train_test_split line by line",b:`<div class="cb">X_train, X_test, y_train, y_test = <b>train_test_split</b>(
+    X, y,
+    <u>test_size=0.25</u>,     <i># 25% sealed away for testing</i>
+    <b>random_state=42</b>)    <i># a seed so the shuffle is repeatable</i></div><p>It <b>shuffles</b> the rows, cuts them, and hands back <b>four pieces</b> (in this exact order): training features, test features, training answers, test answers.</p><p><code>random_state</code> can be any number. Using one means you and a colleague get the <i>same</i> split and comparable results. 🤝</p>`},
+{t:"x",ti:"Build the feature table X",p:"Create <code>X</code> from <code>df</code> with the columns <code>age, cough, wl, ns, fever, hiv, contact, bmi, cough_na</code>. <b>Do not include <code>tb</code>!</b>",start:"# build X\n",sol:"X = df[['age','cough','wl','ns','fever','hiv','contact','bmi','cough_na']]",req:[/x=df\[\[/,/'age'/,/'cough'/,/'wl'/,/'ns'/,/'fever'/,/'hiv'/,/'contact'/,/'bmi'/,/'cough_na'/,/\]\]/],no:[[/'tb'/,"Careful: 'tb' is the answer! Putting it in X is data leakage, since the model would just read the answer."]],out:function(){return"X.shape → (1600, 9)"},h:["Use double square brackets around a list of column names.","X = df[['age','cough','wl','ns','fever','hiv','contact','bmi','cough_na']]"],why:"X has 9 feature columns for 1,600 patients. The target stays out."},
+{t:"x",ti:"Pick the target y",p:"Create <code>y</code> as the single column <code>tb</code>.",start:"# target\n",sol:"y = df['tb']",req:[/y=df(\['tb'\]|\.tb)(?!\[)/],out:function(){return"y.shape → (1600,)"},h:["Single brackets this time, and just the one column name.","y = df['tb']"],why:"y is one column of 0s and 1s: the 'answer key'."},
+{t:"x",ti:"Do the split",ctx:"X = df[[...9 features...]]\ny = df['tb']",p:"Use <code>train_test_split</code> on <code>X</code> and <code>y</code> with <b>25% test data</b> and a <b>random_state</b> of your choice. Remember the four outputs, in order!",start:"from sklearn.model_selection import train_test_split\n\n",sol:"X_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.25, random_state=42)",req:[/x_train,x_test,y_train,y_test=train_test_split\(x,y,/,/test_size=0?\.25(?!\d)/,/random_state=\d+/],out:function(){return"X_train: ("+SP.tr.length+", 9)   X_test: ("+SP.te.length+", 9)"},h:["The four names go on the left, in the order: X_train, X_test, y_train, y_test.","X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)"],why:"1,200 patients to learn from, 400 sealed away. From now on, the test set is untouchable until evaluation."}]},
+
+{e:"🛠️",n:"Train a model",cs:`from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+model = make_pipeline(StandardScaler(), LogisticRegression())
+model.fit(X_train, y_train)
+probs = model.predict_proba(X_test)[:, 1]
+roc_auc_score(y_test, probs)`,
+steps:[
+{t:"s",h:"From score to probability",v:"sig",b:`<p>Logistic regression first builds a <b>score</b> from the features: <code>z = w × feature + b</code>. The weight <b>w</b> says how strongly the feature pushes risk, and <b>b</b> is the baseline.</p><p>Then it squashes the score into a probability with the <b>sigmoid</b> curve, always between 0% and 100%. <b>Play with w and b</b> and see how the S-curve changes:</p>`},
+{t:"s",h:"What 'training' actually means",v:"fit",b:`<p>Training = finding the w and b that make the curve match reality. The computer starts with a flat guess (every patient 50%), measures how wrong it is (<b>loss</b>), and nudges w and b to reduce the loss. Repeat. This is <b>gradient descent</b>.</p><p>Below, one feature (weeks of cough) is trained for real. The dots are the actual TB rate for each cough duration. <b>Watch the curve learn to fit them:</b></p>`},
+{t:"s",h:"The scikit-learn recipe",b:`<p>Every sklearn model follows three steps: <b>create → fit → predict</b>.</p><div class="cb">model = make_pipeline(<b>StandardScaler()</b>, <b>LogisticRegression()</b>)  <i># create</i>
+model.<b>fit</b>(X_train, y_train)                                <i># learn</i>
+probs = model.<b>predict_proba</b>(X_test)<b>[:, 1]</b>                 <i># predict</i></div><p>🔹 <b>StandardScaler</b> puts features on the same scale (age ~40, a flag ~0/1) so weights are comparable and training is stable.<br>🔹 A <b>pipeline</b> chains steps, so scaling is learned from training data only (no leakage!).<br>🔹 <code>predict_proba</code> returns <b>two columns</b>: P(no TB) and P(TB). <code>[:, 1]</code> means "all rows, column 1" = the TB probability.</p><p>Finally, <b>AUC</b> (<code>roc_auc_score</code>) tells you how well the model ranks TB patients above healthy ones. 0.5 = coin flip, 1.0 = perfect.</p>`},
+{t:"x",ti:"Create the model",ctx:"(imports already done)",p:"Create <code>model</code> as a <b>pipeline</b> of <code>StandardScaler()</code> followed by <code>LogisticRegression()</code>.",start:"from sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\n\n",sol:"model = make_pipeline(StandardScaler(), LogisticRegression())",req:[/model=make_pipeline\(standardscaler\(\),logisticregression\(.*\)\)/],out:function(){return PIPE},h:["make_pipeline takes the steps in order, separated by commas.","model = make_pipeline(StandardScaler(), LogisticRegression())"],why:"Nothing is learned yet. You've just built the recipe."},
+{t:"x",ti:"Fit it",ctx:CTX3,p:"Train the model on the <b>training</b> data only.",start:"# train the model\n",sol:"model.fit(X_train, y_train)",req:[/model\.fit\(x_train,y_train\)/],no:[[/model\.fit\(x_test/,"Never fit on the test set! That's the sealed envelope."]],out:function(){return PIPE},h:["Call .fit() with the training features and training answers.","model.fit(X_train, y_train)"],why:"This ran gradient descent on 1,200 patients. The weights are now learned."},
+{t:"x",ti:"Predict probabilities",ctx:"model.fit(X_train, y_train)  # done",p:"Get the model's <b>probability of TB</b> for each test patient and store it in <code>probs</code>. (Remember: column 1.)",start:"# probabilities for the test set\n",sol:"probs = model.predict_proba(X_test)[:, 1]",req:[/probs=model\.predict_proba\(x_test\)\[:,1\]/],out:function(){return ff(E0.ps)},h:["predict_proba(X_test) then pick column 1 with [:, 1]","probs = model.predict_proba(X_test)[:, 1]"],why:"Each number is a risk between 0 and 1 for one patient. Notice most are small, because most people don't have TB."},
+{t:"x",ti:"Score it with AUC",ctx:"probs = model.predict_proba(X_test)[:, 1]",p:"Compute the <b>AUC</b> with <code>roc_auc_score</code> using the true answers and your probabilities.",start:"from sklearn.metrics import roc_auc_score\n\n",sol:"print(roc_auc_score(y_test, probs))",req:[/roc_auc_score\(y_test,probs\)/],out:function(){return n4(E0.auc)},h:["roc_auc_score(true_answers, predicted_probabilities)","print(roc_auc_score(y_test, probs))"],why:"AUC "+n4(E0.auc)+": if you pick a random TB patient and a random healthy one, the model ranks the TB patient higher about "+(E0.auc*100).toFixed(0)+"% of the time. 🎉 Your first real model!"}]},
+
+{e:"🎚️",n:"Evaluate honestly",cs:`flagged = probs >= 0.2
+confusion_matrix(y_test, flagged)   # [[TN FP],[FN TP]]
+recall_score(y_test, flagged)       # sensitivity
+precision_score(y_test, flagged)`,
+steps:[
+{t:"s",h:"A probability is not a decision",v:"thr",b:`<p>Your model gives risks like 0.07 or 0.63. To <b>act</b>, you pick a <b>threshold</b>: flag everyone at or above it for a GeneXpert test.</p><p>Drag the threshold on our real test patients. Watch what you gain and what you pay:</p>`},
+{t:"s",h:"The confusion matrix, decoded",b:`<p>Every flag lands in one of four boxes. In sklearn the matrix is laid out like this (<b>rows = what was true, columns = what you predicted</b>):</p><table><tr><th></th><th>Predicted no TB</th><th>Predicted TB</th></tr><tr><th>Actually no TB</th><td>✅ TN</td><td>🚨 FP (wasted test)</td></tr><tr><th>Actually TB</th><td>😬 FN (missed case!)</td><td>✅ TP</td></tr></table><div class="cb"><b>Sensitivity</b> (recall) = TP / (TP + FN)   <i>of the sick, how many did we catch?</i>
+<b>Precision</b>          = TP / (TP + FP)   <i>of those flagged, how many were sick?</i></div>`},
+{t:"s",h:"Choosing the threshold is a values decision",b:`<p>Lower threshold → catch more TB (higher sensitivity) but more false alarms (lower precision). Higher threshold → the opposite.</p><p>For TB, a missed case keeps spreading, while a false alarm costs one test. So programs usually accept a <b>low threshold</b>. But tests aren't free, so there's a ceiling. <b>That trade-off is for the team to decide, not the algorithm.</b></p><div class="tip">💡 <b>AUC</b> doesn't depend on any threshold. It judges the <i>ranking</i>. Sensitivity and precision judge a <i>specific decision</i>. You need both views.</div>`},
+{t:"x",ti:"Flag high-risk patients",ctx:CTX4,p:"Create <code>flagged</code>: <b>True</b> for every patient whose probability is at least <b>0.2</b>.",start:"# flag anyone with risk >= 0.2\n",sol:"flagged = probs >= 0.2",req:[/flagged=\(?probs>=0?\.2(?!\d)/],out:function(){return"flagged → "+(c02.tp+c02.fp)+" of "+SP.te.length+" patients flagged (True)"},h:["Comparing an array to a number gives True/False for each element.","flagged = probs >= 0.2"],why:"A comparison on a whole array works on every patient at once. No loops needed."},
+{t:"x",ti:"Build the confusion matrix",ctx:CTX5,p:"Print the <b>confusion matrix</b> comparing <code>y_test</code> with <code>flagged</code>.",start:"from sklearn.metrics import confusion_matrix\n\n",sol:"print(confusion_matrix(y_test, flagged))",req:[/confusion_matrix\(y_test,flagged\)/],out:function(){return"[["+pad(c02.tn,4)+" "+pad(c02.fp,4)+"]\n ["+pad(c02.fn,4)+" "+pad(c02.tp,4)+"]]"},h:["confusion_matrix(truth, prediction)","print(confusion_matrix(y_test, flagged))"],why:"Top row: healthy people ("+c02.tn+" correctly cleared, "+c02.fp+" false alarms). Bottom row: TB patients ("+c02.fn+" missed, "+c02.tp+" caught)."},
+{t:"x",ti:"Sensitivity",ctx:CTX5,p:"Compute the <b>recall</b> (sensitivity) with <code>recall_score</code>.",start:"from sklearn.metrics import recall_score\n\n",sol:"print(recall_score(y_test, flagged))",req:[/recall_score\(y_test,flagged\)/],out:function(){return n4(c02.se)},h:["recall_score(truth, prediction)","print(recall_score(y_test, flagged))"],why:"At 0.2 you catch "+pc(c02.se)+" of true TB cases. Is that enough for a deadly, treatable disease?"},
+{t:"x",ti:"Precision",ctx:CTX5,p:"Compute the <b>precision</b> with <code>precision_score</code>.",start:"from sklearn.metrics import precision_score\n\n",sol:"print(precision_score(y_test, flagged))",req:[/precision_score\(y_test,flagged\)/],out:function(){return n4(c02.pr)},h:["Same pattern as recall_score.","print(precision_score(y_test, flagged))"],why:"Of everyone flagged, "+pc(c02.pr)+" truly had TB. That's the price of the higher sensitivity."}]},
+
+{e:"🚀",n:"Improve & validate",cs:`LogisticRegression(class_weight='balanced')
+from sklearn.model_selection import cross_val_score
+scores = cross_val_score(model, X, y, cv=5, scoring='roc_auc')
+scores.mean(), scores.std()`,
+steps:[
+{t:"s",h:"Why the model is too polite",v:"bal",b:`<p>Only ~9% of patients have TB, so the model learns that saying "healthy" is usually right. At the default 0.5 threshold it flags too few people and <b>misses TB cases</b>.</p><p>The fix: <b>class weights</b>. Tell the model a missed TB patient is much more costly than a missed healthy one. In sklearn it's one argument: <code>class_weight='balanced'</code>. See the effect on our real test set:</p>`},
+{t:"s",h:"One split can fool you",v:"cv",b:`<p>Our test set has only ~47 TB patients. A lucky (or unlucky) split could shift our score a lot. <b>Cross-validation</b> fixes this: split into 5 chunks, and let <b>each chunk take a turn as the test set</b> while the other 4 train. You get 5 scores instead of 1. Click through the folds:</p>`},
+{t:"s",h:"What you can do now",b:`<p>You've done the real workflow: load → explore → clean → split → train → evaluate → improve → validate. 🎉</p><p>Cross-validation in one line: <code>cross_val_score(model, X, y, cv=5, scoring='roc_auc')</code>. Report the <b>mean ± standard deviation</b>, never a single lucky number.</p><div class="tip">🔭 <b>Where to go next:</b> random forests and gradient boosting, calibration (are 30% risks really 30%?), SHAP for explainability, fairness checks across urban/rural patients, and monitoring a model after deployment.</div><p>Last practice round →</p>`},
+{t:"x",ti:"Balance the classes",ctx:CTX3,p:"Create <code>model_bal</code>: the same pipeline, but with <code>LogisticRegression(class_weight='balanced')</code>.",start:"# a balanced pipeline\n",sol:"model_bal = make_pipeline(StandardScaler(), LogisticRegression(class_weight='balanced'))",req:[/model_bal=make_pipeline\(standardscaler\(\),logisticregression\(class_weight='balanced'/],out:function(){return"Pipeline(steps=[('standardscaler', StandardScaler()),\n  ('logisticregression', LogisticRegression(class_weight='balanced'))])"},h:["class_weight is an argument inside LogisticRegression( ... )","model_bal = make_pipeline(StandardScaler(), LogisticRegression(class_weight='balanced'))"],why:"At 0.5, sensitivity would rise from "+pc(c05.se)+" to "+pc(cb05.se)+" with this model, at the cost of more false alarms."},
+{t:"x",ti:"Cross-validate it",ctx:"model_bal = make_pipeline(..., LogisticRegression(class_weight='balanced'))",p:"Run <b>5-fold cross-validation</b> on <code>model_bal</code> using all of <code>X</code> and <code>y</code>, scoring by <b>roc_auc</b>. Store the result in <code>scores</code>.",start:"from sklearn.model_selection import cross_val_score\n\n",sol:"scores = cross_val_score(model_bal, X, y, cv=5, scoring='roc_auc')",req:[/scores=cross_val_score\(model_bal,x,y,/,/cv=5/,/scoring='roc_auc'/],out:function(){return"array(["+CVB.map(n4).join(", ")+"])"},h:["cross_val_score(model, X, y, cv=..., scoring=...)","scores = cross_val_score(model_bal, X, y, cv=5, scoring='roc_auc')"],why:"Five different AUCs, one per fold. Notice they wobble: that's the uncertainty a single split hides."},
+{t:"x",ti:"Report it properly",ctx:"scores = cross_val_score(model_bal, X, y, cv=5, scoring='roc_auc')",p:"Print the <b>mean</b> and the <b>standard deviation</b> of <code>scores</code>.",start:"# report mean and spread\n",sol:"print(scores.mean(), scores.std())",req:[/scores\.mean\(\)/,/scores\.std\(\)/],out:function(){return n4(mean(CVB))+" "+n4(sdv(CVB))},h:["Both are methods on the scores array.","print(scores.mean(), scores.std())"],why:"AUC ≈ "+n4(mean(CVB))+" ± "+n4(sdv(CVB))+". That's how you honestly report model performance. 👑"}]}
+];
+/* ---------- visuals ---------- */
+function bt(label,on,att){return'<button class="btn sm ghost" '+att+'>'+label+'</button>'}
+var V={
+explore:function(el){var A=[["df.shape","(1600, 10)"],["df.head(3)",head(3)],["df.columns","Index(['age','cough','wl','ns','fever','hiv','contact','bmi','rural','tb'], dtype='object')"],["df['tb'].mean()",String(+prev.toFixed(4))],["df['age'].describe()","count  1600.0\nmean     "+mean(ages).toFixed(1)+"\nstd      "+sdv(ages).toFixed(1)+"\nmin      "+Math.min.apply(null,ages)+"\nmax      "+Math.max.apply(null,ages)]];
+el.innerHTML=A.map(function(a,i){return'<button class="btn sm" data-i="'+i+'">'+a[0]+"</button>"}).join("")+'<div class="out" id="eo">Click a command ↑</div>';el.querySelectorAll("button").forEach(function(b){b.onclick=function(){$("eo").textContent=">>> "+A[b.dataset.i][0]+"\n"+A[b.dataset.i][1]}})},
+anatomy:function(el){var cols=CN,h='<div style="overflow-x:auto"><table><tr>'+cols.map(function(c){return'<th class="cl" data-c="'+c+'">'+c+"</th>"}).join("")+"</tr>";RAW.slice(0,4).forEach(function(d){h+="<tr>"+cols.map(function(c){return"<td>"+(d[c]===null?"NaN":d[c])+"</td>"}).join("")+"</tr>"});el.innerHTML=h+'</table></div><div class="tip" id="am">👆 Click a column name.</div>';
+el.querySelectorAll("th").forEach(function(t){t.onclick=function(){var c=t.dataset.c;$("am").className="tip "+(c=="tb"?"good":"");$("am").innerHTML=c=="tb"?"🎯 <b>Yes! tb is the target (y).</b> It's the answer we want to predict. Every other column is a feature (X).":"🧩 <b>"+c+"</b> is a <b>feature</b>: something we know at screening. Keep looking for the column we want to predict."}})},
+miss:function(el){var cells=RAW.slice(0,40).map(function(d){return d.cough});
+function draw(m){var med=0,out=[],html="";cells.forEach(function(v){if(v===null){if(m=="drop")return;out.push([med,m=="flag"?"f":"m"])}else out.push([v,"o"])});
+out.forEach(function(o){var bg=o[1]=="o"?"var(--line)":o[1]=="m"?"#fcd34d":"#fda4af";html+='<i style="background:'+bg+'">'+(m=="none"&&0?"":o[0])+"</i>"});
+if(m=="none"){html="";cells.forEach(function(v){html+='<i style="background:'+(v===null?"var(--bad)":"var(--line)")+';color:'+(v===null?"#fff":"inherit")+'">'+(v===null?"?":v)+"</i>"})}
+$("mg").innerHTML=html;var miss=cells.filter(function(v){return v===null}).length;$("mt").innerHTML={none:"❓ <b>"+miss+" of 40</b> patients have no cough value.",drop:"🗑️ <b>Drop rows:</b> only "+(40-miss)+" patients left. We lost "+miss+" patients (and TB patients are more likely to be among them).",median:"🩹 <b>Median fill</b> (yellow): everyone kept, but the median is 0, so we've silently said 'no cough'. The model can't tell guessed from real.",flag:"🚩 <b>Fill + flag</b> (pink = was missing): everyone kept AND a second column remembers which were guessed. Best of both."}[m]}
+el.innerHTML='<div class="row"><button class="btn sm ghost" data-m="none">Original</button><button class="btn sm" data-m="drop">🗑️ Drop</button><button class="btn sm" data-m="median">🩹 Median fill</button><button class="btn sm" data-m="flag">🚩 Fill + flag</button></div><div class="grid" id="mg" style="grid-template-columns:repeat(10,1fr)"></div><div class="tip" id="mt"></div>';el.querySelectorAll("button").forEach(function(b){b.onclick=function(){draw(b.dataset.m)}});draw("none")},
+split:function(el){var r=rngf(5),ord=[];for(var i=0;i<100;i++)ord.push(i);for(i=99;i>0;i--){var j=Math.floor(r()*(i+1)),t=ord[i];ord[i]=ord[j];ord[j]=t}
+el.innerHTML='<label>test_size = <b id="sv"></b><input type="range" id="ss" min="10" max="50" step="5" value="25"></label><div class="grid" id="sg" style="grid-template-columns:repeat(20,1fr)"></div><div class="tip" id="sn"></div>';
+function d(){var t=+$("ss").value;$("sv").textContent=(t/100).toFixed(2);var h="";for(i=0;i<100;i++)h+='<i style="height:auto;aspect-ratio:1;background:'+(ord[i]<t?"var(--gold)":"var(--pri)")+'"></i>';$("sg").innerHTML=h;$("sn").innerHTML="🟪 <b>"+(100-t)+"</b> patients to learn from · 🟧 <b>"+t+"</b> sealed away to test. "+(t<20?"Test set is small, so scores will be noisy.":t>40?"Less data to learn from, so the model gets weaker.":"A balanced split. 20-30% is typical.")}
+$("ss").oninput=d;d()},
+sig:function(el){el.innerHTML='<label>weight w = <b id="wv"></b><input type="range" id="w" min="-10" max="60" value="10"></label><label>baseline b = <b id="bv"></b><input type="range" id="b" min="-60" max="20" value="-20"></label><label>patient\'s score x = <b id="xv"></b><input type="range" id="x" min="-20" max="40" value="10"></label><svg viewBox="0 0 320 150" width="100%" id="sg"></svg><div class="tip" id="st"></div>';
+function d(){var w=$("w").value/10,b=$("b").value/10,x=$("x").value/10;$("wv").textContent=w.toFixed(1);$("bv").textContent=b.toFixed(1);$("xv").textContent=x.toFixed(1);var pts=[];for(var i=-20;i<=40;i++)pts.push((20+(i+20)*4.6)+","+(130-sig(w*i/10+b)*115));var p=sig(w*x+b),px=20+(x*10+20)*4.6;
+$("sg").innerHTML='<line x1="20" x2="300" y1="130" y2="130" stroke="currentColor" opacity=".3"/><line x1="20" x2="300" y1="72" y2="72" stroke="currentColor" opacity=".15" stroke-dasharray="3"/><polyline fill="none" stroke="#7c3aed" stroke-width="3" points="'+pts.join(" ")+'"/><circle cx="'+px+'" cy="'+(130-p*115)+'" r="6" fill="#f59e0b"/><text x="20" y="145" font-size="10" fill="currentColor">score x →</text><text x="4" y="14" font-size="10" fill="currentColor">100%</text>';$("st").innerHTML="z = "+w.toFixed(1)+" × "+x.toFixed(1)+" + "+b.toFixed(1)+" = <b>"+(w*x+b).toFixed(2)+"</b> → risk = <b>"+(p*100).toFixed(0)+"%</b>. "+(Math.abs(w)<.5?"Weight near 0: the feature barely matters, so the curve is flat.":w<0?"Negative weight: higher score → LOWER risk.":w>3?"Big weight: a steep curve, so the feature strongly separates risk.":"Positive weight: higher score → higher risk.")}
+["w","b","x"].forEach(function(k){$(k).oninput=d});d()},
+fit:function(el){var tr=SP.tr,xs=tr.map(function(d){return d.cough}),mu=mean(xs),sd=sdv(xs)||1,w=0,b=0,fr=[];for(var it=0;it<45;it++){var gw=0,gb=0,L=0;tr.forEach(function(d,i){var z=w*(xs[i]-mu)/sd+b,p=sig(z);gw+=(p-d.tb)*(xs[i]-mu)/sd;gb+=p-d.tb;L+=-(d.tb?Math.log(p+1e-9):Math.log(1-p+1e-9))});w-=.9*gw/tr.length;b-=.9*gb/tr.length;fr.push([w,b,L/tr.length])}fr.unshift([0,0,Math.log(2)]);
+var bins=[];for(var k=0;k<=8;k++){var g=C.filter(function(d){return Math.round(d.cough)==k});bins.push([k,g.length?mean(g.map(function(d){return d.tb})):0,g.length])}
+el.innerHTML='<svg viewBox="0 0 320 160" width="100%" id="fs"></svg><div class="res" id="ft"></div><button class="btn" id="fp">▶ Train!</button>';var tm;
+function d(i){var f=fr[i],pts=[];for(var c=0;c<=80;c++){var x=c/10;pts.push((30+x*32)+","+(135-sig(f[0]*(x-mu)/sd+f[1])*115))}
+var s='<line x1="30" x2="300" y1="135" y2="135" stroke="currentColor" opacity=".3"/>';bins.forEach(function(q){if(q[2])s+='<circle cx="'+(30+q[0]*32)+'" cy="'+(135-q[1]*115)+'" r="'+Math.max(3,Math.min(10,Math.sqrt(q[2])/2.6))+'" fill="#f59e0b" opacity=".85"/><text x="'+(30+q[0]*32)+'" y="150" font-size="9" text-anchor="middle" fill="currentColor">'+q[0]+"</text>"});
+s+='<polyline fill="none" stroke="#7c3aed" stroke-width="3" points="'+pts.join(" ")+'"/><text x="30" y="12" font-size="10" fill="currentColor">orange dots = real TB rate at each cough duration (weeks). purple = model</text>';$("fs").innerHTML=s;$("ft").innerHTML="Step <b>"+i+"</b>/"+(fr.length-1)+" · loss <b>"+f[2].toFixed(3)+"</b> · weight w = <b>"+f[0].toFixed(2)+"</b>"}
+function go(){clearInterval(tm);var i=0;tm=setInterval(function(){d(i);if(++i>=fr.length)clearInterval(tm)},110)}$("fp").onclick=function(){this.textContent="↻ Replay";go()};d(0)},
+thr:function(el){el.innerHTML='<label>threshold = <b id="tv"></b><input type="range" id="ts" min="2" max="90" value="50"></label><table id="tc"></table><div class="res"><div>Sensitivity <b id="se"></b><div class="meter"><i id="sb" style="background:var(--ok)"></i></div>Precision <b id="pr"></b><div class="meter"><i id="pb" style="background:var(--pri)"></i></div></div></div><div class="tip" id="tn"></div>';
+function d(){var t=$("ts").value/100,c=conf(E0.ps,E0.ys,t);$("tv").textContent=t.toFixed(2);$("tc").innerHTML="<tr><th></th><th>Predicted no TB</th><th>Predicted TB</th></tr><tr><th>Actually no TB</th><td>✅ "+c.tn+"</td><td>🚨 "+c.fp+"</td></tr><tr><th>Actually TB</th><td>😬 "+c.fn+"</td><td>✅ "+c.tp+"</td></tr>";$("se").textContent=pc(c.se);$("pr").textContent=pc(c.pr);$("sb").style.width=c.se*100+"%";$("pb").style.width=c.pr*100+"%";$("tn").innerHTML=t<.2?"Very low line: you catch nearly everyone with TB but flag a lot of healthy people.":t>.6?"High line: very few false alarms, but you are <b>missing TB patients</b>.":"Somewhere in between. Moving left raises sensitivity, and the price is precision."}
+$("ts").oninput=d;d()},
+bal:function(el){el.innerHTML='<div class="row"><button class="btn sm" data-k="0">Normal</button><button class="btn sm ghost" data-k="1">class_weight=\'balanced\'</button></div><div class="res">Sensitivity at threshold 0.5<div class="meter"><i id="b1" style="background:var(--ok)"></i></div>Precision at threshold 0.5<div class="meter"><i id="b2" style="background:var(--pri)"></i></div><b id="bt"></b></div><div class="tip" id="bn"></div>';
+function d(k){var c=k?cb05:c05;$("b1").style.width=c.se*100+"%";$("b2").style.width=c.pr*100+"%";$("bt").textContent="Sensitivity "+pc(c.se)+" · Precision "+pc(c.pr);$("bn").innerHTML=k?"⚖️ The model now treats a missed TB case as costly. It flags more people, so it <b>catches far more TB</b> but with more false alarms. Same AUC, different line.":"😴 The polite model: high precision, but it <b>misses most TB cases</b> at the default 0.5 line.";el.querySelectorAll(".row .btn").forEach(function(b){b.classList.toggle("ghost",b.dataset.k!=k)})}
+el.querySelectorAll(".row .btn").forEach(function(b){b.onclick=function(){d(+b.dataset.k)}});d(0)},
+cv:function(el){var f=0;el.innerHTML='<div class="grid" id="cg" style="grid-template-columns:repeat(5,1fr)"></div><button class="btn" id="cn">▶ Next fold</button><div class="tip" id="ct">Each fold takes a turn being the sealed test set.</div>';
+function d(){var h="";for(var i=0;i<5;i++)h+='<i style="height:44px;line-height:44px;background:'+(i==f?"var(--gold)":"var(--pri)")+';color:#fff">'+(i==f?"TEST":"train")+"</i>";$("cg").innerHTML=h}
+d();var step=0;$("cn").onclick=function(){f=step%5;d();$("ct").innerHTML="Fold "+(f+1)+": test AUC <b>"+n4(CVU[f])+"</b>"+(step>=4?" · After 5 folds: mean <b>"+n4(mean(CVU))+"</b> ± "+n4(sdv(CVU))+". Notice how scores wobble between folds.":"");step++;this.textContent=step>=5?"↻ Again":"▶ Next fold"}}};
+/* ---------- engine ---------- */
+var app=document.getElementById("app"),Ci=0,si=0,tries=0,hu=0,solved=false,nx;
+function lvl(){return Math.min(TITLES.length-1,Math.floor(S.xp/100))}
+function nex(c){return CH[c].steps.filter(function(s){return s.t=="x"}).length}
+function ndone(c){var n=0;for(var i=0;i<CH[c].steps.length;i++)if(S.ex[c+"."+i])n++;return n}
+function chDone(c){return ndone(c)==nex(c)}
+function head2(){var nd=0;CH.forEach(function(c,i){if(chDone(i))nd++});return'<h1>🧪 Predict &amp; Protect</h1><p class="sub">Predictive modeling in healthcare with Python. Learn it, then code it.</p><div class="hero"><small>Your rank</small><br><b>'+TITLES[lvl()]+'</b><div class="stats"><span>⭐ '+S.xp+' XP</span><span>🔥 best streak '+S.best+'</span><span>📘 '+nd+'/'+CH.length+' chapters</span></div><div class="xpb"><i style="width:'+(S.xp%100)+'%"></i></div></div>'}
+function home(){var h=head2();CH.forEach(function(c,i){var lock=i>0&&!chDone(i-1);h+='<button class="ch" data-i="'+i+'"'+(lock?" disabled":"")+'><div class="e">'+(lock?"🔒":c.e)+'</div><div><b>Chapter '+(i+1)+": "+c.n+(chDone(i)?" ✅":"")+'</b><small>'+c.steps.filter(function(s){return s.t=="s"}).length+" interactive lessons · "+ndone(i)+"/"+nex(i)+' coding exercises</small></div></button>'});
+h+='<p class="foot">Note: your code is checked for the right ideas (like DataCamp does), not run in a real Python interpreter. If a correct answer is marked wrong, use Show solution. The data and the output numbers are real, from a simulated TB screening dataset.</p>';app.innerHTML=h;app.querySelectorAll(".ch").forEach(function(b){b.onclick=function(){Ci=+b.dataset.i;si=0;show()}})}
+function norm(s){return s.toLowerCase().replace(/#.*$/gm,"").replace(/"/g,"'").replace(/\s+/g,"")}
+function bal(s){var st=[],p={")":"(","]":"[","}":"{"},q=null;for(var i=0;i<s.length;i++){var c=s[i];if(q){if(c==q)q=null;continue}if(c=="'"||c=='"'){q=c;continue}if("([{".indexOf(c)>-1)st.push(c);else if(p[c]){if(st.pop()!=p[c])return false}}return!st.length&&!q}
+function show(){var ch=CH[Ci],s=ch.steps[si],last=si==ch.steps.length-1;tries=0;hu=0;solved=s.t=="s"||!!S.ex[Ci+"."+si];
+var h='<div class="center sub" style="margin:0">'+ch.e+" "+ch.n+'</div><div class="prog"><i style="width:'+(si/ch.steps.length*100)+'%"></i></div><div class="card pop">';
+if(s.t=="s")h+='<span class="tag">📖 Learn</span><h2>'+s.h+"</h2>"+s.b+(s.v?'<div id="vz"></div>':"");
+else{var xi=ch.steps.slice(0,si+1).filter(function(q){return q.t=="x"}).length;h+='<span class="tag">💻 Exercise '+xi+" of "+nex(Ci)+"</span><h2>"+s.ti+"</h2><p>"+s.p+"</p>"+(s.ctx?'<h3>Already run for you:</h3><pre>'+s.ctx.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>":"")+'<textarea id="ed" spellcheck="false" autocapitalize="off">'+s.start.replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</textarea><div class="row"><button class="btn" id="run">▶ Run code</button><button class="btn ghost" id="hb">💡 Hint</button><button class="btn ghost" id="sb2" disabled>👀 Solution</button></div><div id="fb"></div><details style="margin-top:10px"><summary>📒 Cheatsheet</summary><pre>'+ch.cs.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre></details>"}
+h+='</div><div class="row"><button class="btn" id="nx">'+(last?"Finish chapter 🎉":"Next →")+'</button><button class="btn ghost" id="bk">← Map</button>'+(s.t=="s"?'<button class="btn ghost" id="jp">⏭ Jump to exercises</button>':"")+"</div>";
+app.innerHTML=h;nx=$("nx");nx.disabled=!solved;$("bk").onclick=home;window.scrollTo(0,0);
+nx.onclick=function(){if(last){if(chDone(Ci)){S.xp+=50;save()}fin()}else{si++;show()}};
+if($("jp"))$("jp").onclick=function(){while(CH[Ci].steps[si].t=="s")si++;show()};
+if(s.v)V[s.v]($("vz"));
+if(s.t=="x"){var ed=$("ed");ed.onkeydown=function(e){if(e.key=="Tab"){e.preventDefault();var p=ed.selectionStart;ed.value=ed.value.slice(0,p)+"  "+ed.value.slice(ed.selectionEnd);ed.selectionStart=ed.selectionEnd=p+2}if(e.key=="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();run(s)}};$("run").onclick=function(){run(s)};
+$("hb").onclick=function(){if(hu<s.h.length){var d=document.createElement("div");d.className="tip";d.innerHTML="💡 <b>Hint "+(hu+1)+":</b> "+s.h[hu].replace(/</g,"&lt;");$("fb").appendChild(d);hu++;if(hu>=s.h.length)$("hb").disabled=true}};
+$("sb2").onclick=function(){$("ed").value=s.sol;var d=document.createElement("div");d.className="tip";d.innerHTML="👀 Here's the solution. Read it, then press <b>Run</b> to continue (no XP this time).";$("fb").appendChild(d);hu=99}}}
+function run(s){var code=$("ed").value,fb=$("fb"),nc=norm(code);tries++;var msg=null;
+
+function say(t,cls){var d=document.createElement("div");d.className="tip "+(cls||"bad");d.innerHTML=t;fb.appendChild(d);d.scrollIntoView({block:"nearest"})}
+if(nc==norm(s.start)||!nc){say("✍️ Write your code in the editor first, then press Run.");return}
+if(!bal(code.replace(/#.*$/gm,""))){say("🔍 Check your brackets and quotes. Something isn't closed or matched.");if(tries>=2)$("sb2").disabled=false;return}
+if(s.no)for(var i=0;i<s.no.length;i++)if(s.no[i][0].test(nc)){say("🚨 "+s.no[i][1]);return}
+var ok=s.req.every(function(r){return r.test(nc)});
+if(!ok){say("Not quite yet. Re-read the instructions, and try again. "+(hu?"":"Stuck? Hit 💡 Hint."));if(tries>=2)$("sb2").disabled=false;return}
+var key=Ci+"."+si,first=!S.ex[key],gain=hu>=99?0:Math.max(5,XP_PER-hu*5-(tries-1>0?5:0));
+var d=document.createElement("div");d.innerHTML='<div class="out">>>> '+code.replace(/&/g,"&amp;").replace(/</g,"&lt;").split("\n").filter(function(l){return l.trim()&&l.trim()[0]!="#"}).slice(-1)[0]+"\n"+s.out().replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</div><div class="tip good">✅ <b>Correct!</b> '+(first?'<span class="xp">+'+gain+" XP</span>":"")+"<br>"+s.why+"</div>";fb.appendChild(d);
+if(first){S.ex[key]=1;S.xp+=gain;if(tries==1&&hu==0){S.str=(S.str||0)+1;if(S.str>S.best)S.best=S.str}else S.str=0;save()}
+solved=true;nx.disabled=false;$("run").disabled=true;$("ed").readOnly=true}
+function fin(){var all=CH.every(function(c,i){return chDone(i)});app.innerHTML=head2()+'<div class="card center pop"><div class="big">'+(all?"👑":"🏆")+'</div><h2>Chapter '+(Ci+1)+' complete!</h2><p>'+(chDone(Ci)?"+50 XP bonus.":"")+' You are now a <b>'+TITLES[lvl()]+'</b></p>'+(all?'<div class="tip" style="text-align:left"><b>You finished the whole course!</b> You can now load, explore, clean, split, model, evaluate and validate a healthcare prediction model in Python. Next stop: real data, random forests, SHAP and fairness checks. 💜</div>':"")+'<button class="btn" id="h">Back to the map</button></div>';$("h").onclick=home}
+home();
+try{if("serviceWorker"in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js")})}catch(e){}
+</script>
+</body>
+</html>
